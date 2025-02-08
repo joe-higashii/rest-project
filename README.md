@@ -23,6 +23,8 @@ Antes de rodar a aplicação, é necessário configurar variáveis de ambiente p
 - `export DATABASE_PASSWORD='senha'`
 3. Salve e rode o comando:
 
+source `~/.bash_profile`
+ou source `~/.zshrc`
 
 ### macOS
 
