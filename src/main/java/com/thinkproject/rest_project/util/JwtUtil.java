@@ -10,7 +10,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private static final String SECRET_KEY = "mysecretkeymysecretkeymysecretkeymysecretkey"; // Chave secreta (deve ter pelo menos 32 caracteres)
+    private static final String SECRET_KEY = "mysecretkeymysecretkeymysecretkeymysecretkey";
     private static final long EXPIRATION_TIME = 86400000; // 1 dia em milissegundos
 
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
@@ -43,5 +43,15 @@ public class JwtUtil {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public boolean isTokenExpired(String token) {
+        Date expirationDate = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+        return expirationDate.before(new Date());
     }
 }
