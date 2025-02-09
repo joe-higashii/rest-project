@@ -29,8 +29,13 @@ public class AuthController {
             throw new RuntimeException("Username já existe!");
         }
 
+        String role = user.getRole();
+        if (role == null || (!role.equalsIgnoreCase("USER") && !role.equalsIgnoreCase("ADMIN"))) {
+            throw new RuntimeException("Papel inválido! Use 'USER' ou 'ADMIN'.");
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("USER");
+        user.setRole(role.toUpperCase());
         userRepository.save(user);
 
         Map<String, String> response = new HashMap<>();
@@ -52,6 +57,27 @@ public class AuthController {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Login realizado com sucesso!");
         response.put("token", token);
+        return response;
+    }
+
+    @PostMapping("/renew-token")
+    public Map<String, String> renewToken(@RequestHeader("Authorization") String token) {
+        if (!token.startsWith("Bearer ")) {
+            throw new RuntimeException("Token inválido!");
+        }
+
+        token = token.substring(7);
+
+        if (!jwtUtil.validateToken(token) || jwtUtil.isTokenExpired(token)) {
+            throw new RuntimeException("Token inválido ou expirado!");
+        }
+
+        String username = jwtUtil.extractUsername(token);
+        String newToken = jwtUtil.generateToken(username);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Token renovado com sucesso!");
+        response.put("token", newToken);
         return response;
     }
 }
