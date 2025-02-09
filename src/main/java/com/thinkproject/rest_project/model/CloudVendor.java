@@ -2,16 +2,19 @@ package com.thinkproject.rest_project.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "cloud_vendors")
-public class CloudVendor
-{
+public class CloudVendor {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "vendor_id")
-    private String vendorId;
+    private Long vendorId;
 
     @Column(name = "vendor_name", nullable = false)
     private String vendorName;
@@ -21,22 +24,21 @@ public class CloudVendor
 
     @Column(name = "vendor_phone", nullable = false)
     private String vendorPhone;
-    
+
     public CloudVendor() {
     }
 
-    public CloudVendor(String vendorAddress, String vendorId, String vendorName, String vendorPhone) {
-        this.vendorAddress = vendorAddress;
-        this.vendorId = vendorId;
+    public CloudVendor(String vendorName, String vendorAddress, String vendorPhone) {
         this.vendorName = vendorName;
+        this.vendorAddress = vendorAddress;
         this.vendorPhone = vendorPhone;
     }
 
-    public String getVendorId() {
+    public Long getVendorId() {
         return vendorId;
     }
 
-    public void setVendorId(String vendorId) {
+    public void setVendorId(Long vendorId) {
         this.vendorId = vendorId;
     }
 

@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.thinkproject.rest_project.model.CloudVendor;
 
 @Repository
-public interface CloudVendorRepository extends JpaRepository<CloudVendor, String> {
-
+public interface CloudVendorRepository extends JpaRepository<CloudVendor, Long> {
 }
+
