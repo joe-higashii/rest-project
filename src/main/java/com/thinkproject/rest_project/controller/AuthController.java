@@ -3,6 +3,10 @@ package com.thinkproject.rest_project.controller;
 import com.thinkproject.rest_project.model.User;
 import com.thinkproject.rest_project.repository.UserRepository;
 import com.thinkproject.rest_project.util.JwtUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +27,18 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Operation(
+        summary = "Registrar um novo usuário",
+        description = "Permite registrar um novo usuário no sistema, fornecendo um username, senha e papel (USER ou ADMIN)."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Usuário registrado com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Username já existe ou papel inválido")
+    })
     @PostMapping("/register")
-    public Map<String, String> register(@RequestBody User user) {
+    public Map<String, String> register(
+        @Parameter(description = "Detalhes do usuário para registro (username, password, role)", required = true)
+        @RequestBody User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new RuntimeException("Username já existe!");
         }
@@ -43,8 +57,18 @@ public class AuthController {
         return response;
     }
 
+    @Operation(
+        summary = "Fazer login",
+        description = "Autentica o usuário no sistema e retorna um token JWT para ser usado em endpoints protegidos."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Login realizado com sucesso"),
+        @ApiResponse(responseCode = "401", description = "Usuário ou senha inválidos")
+    })
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody User user) {
+    public Map<String, String> login(
+        @Parameter(description = "Credenciais para autenticação (username e password)", required = true)
+        @RequestBody User user) {
         User existingUser = userRepository.findByUsername(user.getUsername())
                 .orElseThrow(() -> new RuntimeException("Usuário ou senha inválidos!"));
 
@@ -60,8 +84,18 @@ public class AuthController {
         return response;
     }
 
+    @Operation(
+        summary = "Renovar token JWT",
+        description = "Permite renovar um token JWT válido antes de ele expirar, retornando um novo token atualizado."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Token renovado com sucesso"),
+        @ApiResponse(responseCode = "401", description = "Token inválido ou expirado")
+    })
     @PostMapping("/renew-token")
-    public Map<String, String> renewToken(@RequestHeader("Authorization") String token) {
+    public Map<String, String> renewToken(
+        @Parameter(description = "Token JWT atual no cabeçalho Authorization com o formato 'Bearer {token}'", required = true)
+        @RequestHeader("Authorization") String token) {
         if (!token.startsWith("Bearer ")) {
             throw new RuntimeException("Token inválido!");
         }
