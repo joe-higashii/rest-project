@@ -1,3 +1,4 @@
+//SecurityConfig.java
 package com.thinkproject.rest_project.config;
 
 import com.thinkproject.rest_project.filter.JwtAuthenticationFilter;
