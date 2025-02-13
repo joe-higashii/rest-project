@@ -1,3 +1,4 @@
+//User.java
 package com.thinkproject.rest_project.model;
 
 import jakarta.persistence.*;

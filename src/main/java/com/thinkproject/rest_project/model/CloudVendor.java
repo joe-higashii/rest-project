@@ -1,4 +1,8 @@
+//CloudVendor.java
 package com.thinkproject.rest_project.model;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,4 +33,8 @@ public class CloudVendor {
         this.vendorAddress = vendorAddress;
         this.vendorPhone = vendorPhone;
     }
+
+    @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL)
+    private List<CloudService> services = new ArrayList<>();
+    
 }
