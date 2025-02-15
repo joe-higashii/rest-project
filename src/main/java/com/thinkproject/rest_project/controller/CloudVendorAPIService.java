@@ -8,11 +8,14 @@ import com.thinkproject.rest_project.repository.CloudVendorRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/cloudvendor")
+@SecurityRequirement(name = "bearerAuth")
 public class CloudVendorAPIService {
 
     @Autowired
@@ -67,3 +70,4 @@ public class CloudVendorAPIService {
         return "Vendor deleted successfully";
     }
 }
+
