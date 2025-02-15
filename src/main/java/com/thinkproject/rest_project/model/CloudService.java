@@ -1,6 +1,9 @@
 //CloudService.java
 package com.thinkproject.rest_project.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,4 +30,9 @@ public class CloudService {
     @ManyToOne
     @JoinColumn(name = "vendor_id", nullable = false)
     private CloudVendor vendor; // Relacionamento Many-to-One
+
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
+    private List<UsageContract> contracts = new ArrayList<>();
+
 }
+

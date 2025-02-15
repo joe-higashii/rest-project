@@ -7,3 +7,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CloudServiceRepository extends JpaRepository<CloudService, Long> {
 }
+
