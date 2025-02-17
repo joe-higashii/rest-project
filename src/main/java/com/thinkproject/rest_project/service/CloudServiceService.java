@@ -4,7 +4,6 @@ package com.thinkproject.rest_project.service;
 import com.thinkproject.rest_project.model.CloudService;
 import com.thinkproject.rest_project.repository.CloudServiceRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,11 +11,13 @@ import java.util.List;
 import com.thinkproject.rest_project.model.Client;
 import com.thinkproject.rest_project.model.UsageContract;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Service
 public class CloudServiceService {
 
-    @Autowired
-    private CloudServiceRepository cloudServiceRepository;
+    private final CloudServiceRepository cloudServiceRepository;
 
     public List<CloudService> getAllServices() {
         return cloudServiceRepository.findAll();

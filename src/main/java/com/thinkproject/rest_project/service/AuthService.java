@@ -4,24 +4,22 @@ package com.thinkproject.rest_project.service;
 import com.thinkproject.rest_project.model.User;
 import com.thinkproject.rest_project.repository.UserRepository;
 import com.thinkproject.rest_project.util.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Service
 public class AuthService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     public Map<String, String> register(User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {

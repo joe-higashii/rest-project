@@ -8,23 +8,20 @@ import com.thinkproject.rest_project.repository.CloudServiceRepository;
 import com.thinkproject.rest_project.model.Client;
 import com.thinkproject.rest_project.model.CloudService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Service
 public class UsageContractService {
 
-    @Autowired
-    private UsageContractRepository usageContractRepository;
-
-    @Autowired
-    private ClientRepository clientRepository;
-
-    @Autowired
-    private CloudServiceRepository cloudServiceRepository;
+    private final UsageContractRepository usageContractRepository;
+    private final ClientRepository clientRepository;
+    private final CloudServiceRepository cloudServiceRepository;
 
     public List<UsageContract> getAllContracts() {
         return usageContractRepository.findAll();
