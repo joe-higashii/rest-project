@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +18,15 @@ import java.util.List;
 
 import com.thinkproject.rest_project.service.UsageContractService;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/usage-contracts")
 @SecurityRequirement(name = "bearerAuth")
 public class UsageContractController {
 
-    @Autowired
-    private UsageContractService usageContractService;
+    private final UsageContractService usageContractService;
 
     @Operation(
         summary = "Listar todos os contratos de uso",

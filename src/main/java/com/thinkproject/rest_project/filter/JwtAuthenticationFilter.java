@@ -5,7 +5,6 @@ import com.thinkproject.rest_project.model.User;
 import com.thinkproject.rest_project.repository.UserRepository;
 import com.thinkproject.rest_project.util.JwtUtil;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -15,17 +14,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import jakarta.servlet.http.*;
 import jakarta.servlet.*;
+
 import java.io.IOException;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {

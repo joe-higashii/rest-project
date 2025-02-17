@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,14 +18,15 @@ import com.thinkproject.rest_project.model.CloudService;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/clients")
 @SecurityRequirement(name = "bearerAuth")
 public class ClientController {
 
-    @Autowired
-    private ClientService clientService;
+    private final ClientService clientService;
 
     @Operation(
         summary = "Listar todos os clientes",

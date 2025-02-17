@@ -10,20 +10,21 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 import com.thinkproject.rest_project.model.Client;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/cloudservice")
 @SecurityRequirement(name = "bearerAuth")
 public class CloudServiceController {
 
-    @Autowired
-    private CloudServiceService cloudServiceService;
+    private final CloudServiceService cloudServiceService;
 
     @Operation(
         summary = "Listar todos os serviços",
