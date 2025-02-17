@@ -1,3 +1,4 @@
+//Client.java
 package com.thinkproject.rest_project.model;
 
 import jakarta.persistence.*;
@@ -7,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "clients")
@@ -27,5 +30,7 @@ public class Client {
     private String email;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<UsageContract> contracts = new ArrayList<>(); // Relacionamento com UsageContract
 }
+

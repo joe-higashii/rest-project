@@ -1,3 +1,4 @@
+//UsageContract.java
 package com.thinkproject.rest_project.model;
 
 import jakarta.persistence.*;
@@ -36,3 +37,4 @@ public class UsageContract {
     @Column(name = "status", nullable = false)
     private String status; // Ex.: "ACTIVE", "CANCELLED"
 }
+
