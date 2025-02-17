@@ -4,6 +4,8 @@ package com.thinkproject.rest_project.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,6 +34,7 @@ public class CloudService {
     private CloudVendor vendor; // Relacionamento Many-to-One
 
     @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<UsageContract> contracts = new ArrayList<>();
 
 }

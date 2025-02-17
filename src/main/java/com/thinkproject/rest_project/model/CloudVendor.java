@@ -4,6 +4,8 @@ package com.thinkproject.rest_project.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +37,7 @@ public class CloudVendor {
     }
 
     @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<CloudService> services = new ArrayList<>();
     
 }

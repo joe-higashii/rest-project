@@ -1,19 +1,21 @@
+//CloudServiceController.java
 package com.thinkproject.rest_project.controller;
 
 import com.thinkproject.rest_project.model.CloudService;
-import com.thinkproject.rest_project.repository.CloudServiceRepository;
+import com.thinkproject.rest_project.service.CloudServiceService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import com.thinkproject.rest_project.model.Client;
 
 @RestController
 @RequestMapping("/cloudservice")
@@ -21,7 +23,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 public class CloudServiceController {
 
     @Autowired
-    private CloudServiceRepository cloudServiceRepository;
+    private CloudServiceService cloudServiceService;
 
     @Operation(
         summary = "Listar todos os serviços",
@@ -33,7 +35,21 @@ public class CloudServiceController {
     })
     @GetMapping
     public List<CloudService> getAllServices() {
-        return cloudServiceRepository.findAll();
+        return cloudServiceService.getAllServices();
+    }
+
+    @Operation(
+    summary = "Listar todos os clientes que utilizam um serviço",
+    description = "Retorna uma lista de clientes que contrataram um serviço específico."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de clientes retornada com sucesso."),
+        @ApiResponse(responseCode = "404", description = "Serviço não encontrado.")
+    })
+    @GetMapping("/{id}/clients")
+    public List<Client> getClientsByServiceId(
+        @Parameter(description = "ID do serviço", required = true) @PathVariable Long id) {
+        return cloudServiceService.getClientsByServiceId(id);
     }
 
     @Operation(
@@ -49,6 +65,7 @@ public class CloudServiceController {
     public CloudService createService(
         @Parameter(description = "Detalhes do serviço a ser criado", required = true)
         @RequestBody CloudService cloudService) {
-        return cloudServiceRepository.save(cloudService);
+        return cloudServiceService.createService(cloudService);
     }
 }
+
