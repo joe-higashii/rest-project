@@ -13,6 +13,10 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+import com.thinkproject.rest_project.dto.ClientDTO;
+import com.thinkproject.rest_project.dto.CloudServiceDTO;
+import com.thinkproject.rest_project.dto.UsageContractDTO;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -23,8 +27,16 @@ public class UsageContractService {
     private final ClientRepository clientRepository;
     private final CloudServiceRepository cloudServiceRepository;
 
-    public List<UsageContract> getAllContracts() {
-        return usageContractRepository.findAll();
+    public List<UsageContractDTO> getAllUsageContractsAsDTO() {
+        return usageContractRepository.findAll().stream()
+                .map(contract -> new UsageContractDTO(
+                        contract.getId(),
+                        contract.getStatus(),
+                        contract.getStartDate(),
+                        contract.getEndDate(),
+                        new ClientDTO(contract.getClient().getId(), contract.getClient().getName(), contract.getClient().getEmail()),
+                        new CloudServiceDTO(contract.getService().getId(), contract.getService().getName(), contract.getService().getDescription())
+                )).toList();
     }
 
     public List<UsageContract> getContractsByStatus(String status) {
@@ -38,7 +50,19 @@ public class UsageContractService {
                 .filter(contract -> !contract.getStartDate().before(startDate) &&
                                     (contract.getEndDate() == null || !contract.getEndDate().after(endDate)))
                 .toList();
-    }    
+    }
+
+    public List<Object[]> getContractStatistics() {
+        return usageContractRepository.countContractsByStatus();
+    }
+
+    public List<CloudService> getServicesByClient(Long clientId) {
+        return usageContractRepository.findServicesByClientId(clientId);
+    }
+
+    public List<Client> getClientsByService(Long serviceId) {
+        return usageContractRepository.findClientsByServiceId(serviceId);
+    }
 
     public UsageContract createContract(UsageContract usageContract) {
         

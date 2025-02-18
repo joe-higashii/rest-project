@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.thinkproject.rest_project.dto.ClientDTO;
 import com.thinkproject.rest_project.model.CloudService;
 
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,8 +38,21 @@ public class ClientController {
         @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @GetMapping
-    public List<Client> getAllClients() {
-        return clientService.getAllClients();
+    public List<ClientDTO> getAllClients() {
+        return clientService.getAllClientsAsDTO();
+    }
+
+    @Operation(
+        summary = "Listar o cliente pelo ID",
+        description = "Retorna um cliente cadastrado no sistema pelo ID."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Cliente retornado com sucesso"),
+        @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
+    @GetMapping("/{id}")
+    public ClientDTO getClientById(@PathVariable Long id) {
+        return clientService.getClientDTOById(id);
     }
 
     @Operation(

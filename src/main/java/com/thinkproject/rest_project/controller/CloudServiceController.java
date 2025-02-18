@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.thinkproject.rest_project.dto.CloudServiceDTO;
 import com.thinkproject.rest_project.model.Client;
 
 import lombok.RequiredArgsConstructor;
@@ -35,8 +36,8 @@ public class CloudServiceController {
         @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @GetMapping
-    public List<CloudService> getAllServices() {
-        return cloudServiceService.getAllServices();
+    public List<CloudServiceDTO> getAllServices() {
+        return cloudServiceService.getAllServicesAsDTO();
     }
 
     @Operation(
@@ -49,7 +50,7 @@ public class CloudServiceController {
     })
     @GetMapping("/{id}/clients")
     public List<Client> getClientsByServiceId(
-        @Parameter(description = "ID do serviço", required = true) @PathVariable Long id) {
+    @Parameter(description = "ID do serviço", required = true) @PathVariable Long id) {
         return cloudServiceService.getClientsByServiceId(id);
     }
 

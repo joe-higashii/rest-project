@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import org.springframework.web.bind.annotation.*;
 
+import com.thinkproject.rest_project.dto.CloudVendorDTO;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -22,10 +24,10 @@ public class CloudVendorAPIService {
 
     @Operation(summary = "Buscar fornecedor pelo ID", description = "Recupera os detalhes de um fornecedor específico pelo seu ID.")
     @GetMapping("/{vendorId}")
-    public CloudVendor getCloudVendorDetails(
+    public CloudVendorDTO getCloudVendorDetails(
         @Parameter(description = "ID do fornecedor que será buscado.", required = true)
         @PathVariable("vendorId") Long vendorId) {
-        return cloudVendorService.getVendorById(vendorId);
+        return cloudVendorService.getCloudVendorDTOById(vendorId);
     }
 
     @Operation(summary = "Criar um novo fornecedor", description = "Adiciona um novo fornecedor no banco de dados.")

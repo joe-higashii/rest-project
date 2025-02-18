@@ -6,6 +6,8 @@ import com.thinkproject.rest_project.repository.CloudVendorRepository;
 
 import org.springframework.stereotype.Service;
 
+import com.thinkproject.rest_project.dto.CloudVendorDTO;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -14,9 +16,10 @@ public class CloudVendorService {
 
     private final CloudVendorRepository cloudVendorRepository;
 
-    public CloudVendor getVendorById(Long vendorId) {
-        return cloudVendorRepository.findById(vendorId)
-                .orElseThrow(() -> new RuntimeException("Vendor not found"));
+    public CloudVendorDTO getCloudVendorDTOById(Long id) {
+        CloudVendor vendor = cloudVendorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Fornecedor não encontrado com ID: " + id));
+        return new CloudVendorDTO(vendor.getVendorId(), vendor.getVendorName(), vendor.getVendorAddress(), vendor.getVendorPhone());
     }
 
     public CloudVendor createVendor(CloudVendor cloudVendor) {
