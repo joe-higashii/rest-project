@@ -1,12 +1,12 @@
 //UsageContractDTO.java
 package com.thinkproject.rest_project.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class UsageContractDTO {
     private Long id;

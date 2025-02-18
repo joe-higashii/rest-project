@@ -1,26 +1,22 @@
 //UsageContractController.java
 package com.thinkproject.rest_project.controller;
 
-import java.util.Date;
-
 import com.thinkproject.rest_project.model.UsageContract;
-
+import com.thinkproject.rest_project.model.Client;
+import com.thinkproject.rest_project.model.CloudService;
+import com.thinkproject.rest_project.dto.UsageContractDTO;
+import com.thinkproject.rest_project.dto.request.CreateUsageContractRequest;
+import com.thinkproject.rest_project.dto.request.UpdateUsageContractRequest;
+import com.thinkproject.rest_project.service.UsageContractService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
-
-import com.thinkproject.rest_project.dto.UsageContractDTO;
-import com.thinkproject.rest_project.model.Client;
-import com.thinkproject.rest_project.model.CloudService;
-import com.thinkproject.rest_project.service.UsageContractService;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -60,9 +56,10 @@ public class UsageContractController {
     )
     @GetMapping("/date-range")
     public List<UsageContract> getContractsByDateRange(
-        @Parameter(description = "Data de início", required = true) @RequestParam Date startDate,
-        @Parameter(description = "Data de término", required = true) @RequestParam Date endDate) {
-        return usageContractService.getContractsByDateRange(startDate, endDate);
+        @Parameter(description = "Data de início (formato yyyy-MM-dd)", required = true) @RequestParam String startDate,
+        @Parameter(description = "Data de término (formato yyyy-MM-dd)", required = true) @RequestParam String endDate) {
+        // Conversão simples de String para Date (poderia ser aprimorada)
+        return usageContractService.getContractsByDateRange(java.sql.Date.valueOf(startDate), java.sql.Date.valueOf(endDate));
     }
 
     @Operation(summary = "Obter estatísticas de contratos", description = "Retorna a contagem de contratos agrupados por status.")
@@ -97,9 +94,12 @@ public class UsageContractController {
     @PostMapping
     public ResponseEntity<?> createContract(
         @Parameter(description = "Detalhes do contrato a ser criado", required = true)
-        @RequestBody UsageContract usageContract) {
-            UsageContract createdContract = usageContractService.createContract(usageContract);
-            return ResponseEntity.status(201).body(createdContract);
+        @Valid @RequestBody CreateUsageContractRequest request) {
+            UsageContract usageContract = new UsageContract();
+            usageContract.setStatus(request.getStatus());
+            // A lógica de associar Client e CloudService a partir dos IDs é delegada ao service
+            UsageContract created = usageContractService.createContract(usageContract, request.getClientId(), request.getServiceId());
+            return ResponseEntity.status(201).body(created);
     }
 
     @Operation(
@@ -115,9 +115,10 @@ public class UsageContractController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateContract(
         @Parameter(description = "ID do contrato a ser atualizado", required = true) @PathVariable Long id,
-        @Parameter(description = "Novos detalhes do contrato", required = true) @RequestBody UsageContract usageContract) {
-            UsageContract updatedContract = usageContractService.updateContract(id, usageContract);
-            return ResponseEntity.ok(updatedContract);
+        @Parameter(description = "Novos detalhes do contrato", required = true)
+        @Valid @RequestBody UpdateUsageContractRequest request) {
+            UsageContract updated = usageContractService.updateContract(id, request.getStatus(), request.getEndDate());
+            return ResponseEntity.ok(updated);
     }
 
     @Operation(

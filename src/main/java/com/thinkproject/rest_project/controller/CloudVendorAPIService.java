@@ -2,16 +2,15 @@
 package com.thinkproject.rest_project.controller;
 
 import com.thinkproject.rest_project.model.CloudVendor;
+import com.thinkproject.rest_project.dto.CloudVendorDTO;
+import com.thinkproject.rest_project.dto.request.CreateCloudVendorRequest;
+import com.thinkproject.rest_project.dto.request.UpdateCloudVendorRequest;
 import com.thinkproject.rest_project.service.CloudVendorService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
 import org.springframework.web.bind.annotation.*;
-
-import com.thinkproject.rest_project.dto.CloudVendorDTO;
-
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -34,8 +33,12 @@ public class CloudVendorAPIService {
     @PostMapping
     public CloudVendor createCloudVendor(
         @Parameter(description = "Detalhes do fornecedor que será criado.", required = true)
-        @RequestBody CloudVendor cloudVendor) {
-        return cloudVendorService.createVendor(cloudVendor);
+        @Valid @RequestBody CreateCloudVendorRequest request) {
+            CloudVendor vendor = new CloudVendor();
+            vendor.setVendorName(request.getVendorName());
+            vendor.setVendorAddress(request.getVendorAddress());
+            vendor.setVendorPhone(request.getVendorPhone());
+            return cloudVendorService.createVendor(vendor);
     }
 
     @Operation(summary = "Atualizar um fornecedor", description = "Atualiza as informações de um fornecedor existente pelo seu ID.")
@@ -44,8 +47,12 @@ public class CloudVendorAPIService {
         @Parameter(description = "ID do fornecedor que será atualizado.", required = true)
         @PathVariable("vendorId") Long vendorId,
         @Parameter(description = "Novos detalhes do fornecedor.", required = true)
-        @RequestBody CloudVendor cloudVendor) {
-        return cloudVendorService.updateVendor(vendorId, cloudVendor);
+        @Valid @RequestBody UpdateCloudVendorRequest request) {
+            CloudVendor vendor = new CloudVendor();
+            vendor.setVendorName(request.getVendorName());
+            vendor.setVendorAddress(request.getVendorAddress());
+            vendor.setVendorPhone(request.getVendorPhone());
+            return cloudVendorService.updateVendor(vendorId, vendor);
     }
 
     @Operation(summary = "Excluir fornecedor pelo ID", description = "Remove o fornecedor do banco de dados pelo seu ID.")
@@ -57,4 +64,3 @@ public class CloudVendorAPIService {
         return "Vendor deleted successfully";
     }
 }
-

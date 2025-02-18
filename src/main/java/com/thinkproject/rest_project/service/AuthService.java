@@ -1,17 +1,16 @@
 //AuthService.java
 package com.thinkproject.rest_project.service;
 
+import com.thinkproject.rest_project.exception.BadRequestException;
 import com.thinkproject.rest_project.model.User;
 import com.thinkproject.rest_project.repository.UserRepository;
 import com.thinkproject.rest_project.util.JwtUtil;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
@@ -23,12 +22,12 @@ public class AuthService {
 
     public Map<String, String> register(User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new RuntimeException("Username já existe!");
+            throw new BadRequestException("Username já existe!");
         }
 
         String role = user.getRole();
         if (role == null || (!role.equalsIgnoreCase("USER") && !role.equalsIgnoreCase("ADMIN"))) {
-            throw new RuntimeException("Papel inválido! Use 'USER' ou 'ADMIN'.");
+            throw new BadRequestException("Papel inválido! Use 'USER' ou 'ADMIN'.");
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -42,10 +41,10 @@ public class AuthService {
 
     public Map<String, String> login(User user) {
         User existingUser = userRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new RuntimeException("Usuário ou senha inválidos!"));
+                .orElseThrow(() -> new BadRequestException("Usuário ou senha inválidos!"));
 
         if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
-            throw new RuntimeException("Usuário ou senha inválidos!");
+            throw new BadRequestException("Usuário ou senha inválidos!");
         }
 
         String token = jwtUtil.generateToken(existingUser.getUsername());
@@ -58,13 +57,13 @@ public class AuthService {
 
     public Map<String, String> renewToken(String token) {
         if (!token.startsWith("Bearer ")) {
-            throw new RuntimeException("Token inválido!");
+            throw new BadRequestException("Token inválido!");
         }
 
         token = token.substring(7);
 
         if (!jwtUtil.validateToken(token) || jwtUtil.isTokenExpired(token)) {
-            throw new RuntimeException("Token inválido ou expirado!");
+            throw new BadRequestException("Token inválido ou expirado!");
         }
 
         String username = jwtUtil.extractUsername(token);

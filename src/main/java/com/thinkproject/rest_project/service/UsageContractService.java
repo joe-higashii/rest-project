@@ -1,23 +1,19 @@
 //UsageContractService.java
 package com.thinkproject.rest_project.service;
 
+import com.thinkproject.rest_project.dto.UsageContractDTO;
+import com.thinkproject.rest_project.exception.ResourceNotFoundException;
 import com.thinkproject.rest_project.model.UsageContract;
+import com.thinkproject.rest_project.model.Client;
+import com.thinkproject.rest_project.model.CloudService;
 import com.thinkproject.rest_project.repository.UsageContractRepository;
 import com.thinkproject.rest_project.repository.ClientRepository;
 import com.thinkproject.rest_project.repository.CloudServiceRepository;
-import com.thinkproject.rest_project.model.Client;
-import com.thinkproject.rest_project.model.CloudService;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-
-import com.thinkproject.rest_project.dto.ClientDTO;
-import com.thinkproject.rest_project.dto.CloudServiceDTO;
-import com.thinkproject.rest_project.dto.UsageContractDTO;
-
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
@@ -34,8 +30,8 @@ public class UsageContractService {
                         contract.getStatus(),
                         contract.getStartDate(),
                         contract.getEndDate(),
-                        new ClientDTO(contract.getClient().getId(), contract.getClient().getName(), contract.getClient().getEmail()),
-                        new CloudServiceDTO(contract.getService().getId(), contract.getService().getName(), contract.getService().getDescription())
+                        new com.thinkproject.rest_project.dto.ClientDTO(contract.getClient().getId(), contract.getClient().getName(), contract.getClient().getEmail()),
+                        new com.thinkproject.rest_project.dto.CloudServiceDTO(contract.getService().getId(), contract.getService().getName(), contract.getService().getDescription())
                 )).toList();
     }
 
@@ -57,50 +53,41 @@ public class UsageContractService {
     }
 
     public List<CloudService> getServicesByClient(Long clientId) {
+        if (!clientRepository.existsById(clientId)) {
+            throw new ResourceNotFoundException("Cliente não encontrado com ID: " + clientId);
+        }
         return usageContractRepository.findServicesByClientId(clientId);
     }
 
     public List<Client> getClientsByService(Long serviceId) {
+        if (!cloudServiceRepository.existsById(serviceId)) {
+            throw new ResourceNotFoundException("Serviço não encontrado com ID: " + serviceId);
+        }
         return usageContractRepository.findClientsByServiceId(serviceId);
     }
 
-    public UsageContract createContract(UsageContract usageContract) {
-        
-        // Validar cliente
-        Long clientId = usageContract.getClient().getId();
+    public UsageContract createContract(UsageContract usageContract, Long clientId, Long serviceId) {
         Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com ID: " + clientId));
-        
-        // Validar serviço
-        Long serviceId = usageContract.getService().getId();
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com ID: " + clientId));
         CloudService service = cloudServiceRepository.findById(serviceId)
-                .orElseThrow(() -> new RuntimeException("Serviço não encontrado com ID: " + serviceId));
-        
-        // Relacionar cliente e serviço ao contrato
+                .orElseThrow(() -> new ResourceNotFoundException("Serviço não encontrado com ID: " + serviceId));
         usageContract.setClient(client);
         usageContract.setService(service);
-
-        // Registrar data de início
         usageContract.setStartDate(new Date());
-        
         return usageContractRepository.save(usageContract);
     }
 
-    public UsageContract updateContract(Long id, UsageContract usageContract) {
+    public UsageContract updateContract(Long id, String status, Date endDate) {
         UsageContract existingContract = usageContractRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Contrato não encontrado com ID: " + id));
-        
-        // Atualizar detalhes do contrato
-        existingContract.setEndDate(usageContract.getEndDate());
-        existingContract.setStatus(usageContract.getStatus());
-
+                .orElseThrow(() -> new ResourceNotFoundException("Contrato não encontrado com ID: " + id));
+        existingContract.setStatus(status);
+        existingContract.setEndDate(endDate);
         return usageContractRepository.save(existingContract);
     }
 
     public void deleteContract(Long id) {
         UsageContract existingContract = usageContractRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Contrato não encontrado com ID: " + id));
-        
+                .orElseThrow(() -> new ResourceNotFoundException("Contrato não encontrado com ID: " + id));
         usageContractRepository.delete(existingContract);
     }
 }

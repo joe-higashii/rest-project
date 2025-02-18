@@ -1,10 +1,9 @@
 //CloudServiceDTO.java
 package com.thinkproject.rest_project.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
+import lombok.*;
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class CloudServiceDTO {
     private Long id;
