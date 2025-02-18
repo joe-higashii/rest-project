@@ -1,17 +1,15 @@
 //CloudServiceService.java
 package com.thinkproject.rest_project.service;
 
+import com.thinkproject.rest_project.dto.CloudServiceDTO;
+import com.thinkproject.rest_project.exception.ResourceNotFoundException;
 import com.thinkproject.rest_project.model.CloudService;
+import com.thinkproject.rest_project.model.Client;
 import com.thinkproject.rest_project.repository.CloudServiceRepository;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import com.thinkproject.rest_project.dto.CloudServiceDTO;
-import com.thinkproject.rest_project.model.Client;
-
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
@@ -21,8 +19,7 @@ public class CloudServiceService {
 
     public List<Client> getClientsByServiceId(Long serviceId) {
         CloudService service = cloudServiceRepository.findById(serviceId)
-                .orElseThrow(() -> new RuntimeException("Serviço não encontrado com ID: " + serviceId));
-        
+                .orElseThrow(() -> new ResourceNotFoundException("Serviço não encontrado com ID: " + serviceId));
         return service.getContracts().stream()
                 .map(contract -> contract.getClient())
                 .toList();
@@ -36,7 +33,7 @@ public class CloudServiceService {
     
     public CloudServiceDTO getCloudServiceDTOById(Long id) {
         CloudService service = cloudServiceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Serviço não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Serviço não encontrado com ID: " + id));
         return new CloudServiceDTO(service.getId(), service.getName(), service.getDescription());
     }
 
