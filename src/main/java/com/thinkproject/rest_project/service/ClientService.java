@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import com.thinkproject.rest_project.dto.ClientDTO;
 import com.thinkproject.rest_project.model.CloudService;
 import com.thinkproject.rest_project.model.UsageContract;
 
@@ -19,8 +20,16 @@ public class ClientService {
 
     private final ClientRepository clientRepository;
 
-    public List<Client> getAllClients() {
-        return clientRepository.findAll();
+    public List<ClientDTO> getAllClientsAsDTO() {
+        return clientRepository.findAll().stream()
+                .map(client -> new ClientDTO(client.getId(), client.getName(), client.getEmail()))
+                .toList();
+    }
+    
+    public ClientDTO getClientDTOById(Long id) {
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com ID: " + id));
+        return new ClientDTO(client.getId(), client.getName(), client.getEmail());
     }
 
     public Client createClient(Client client) {

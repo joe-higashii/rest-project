@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.thinkproject.rest_project.dto.UsageContractDTO;
+import com.thinkproject.rest_project.model.Client;
+import com.thinkproject.rest_project.model.CloudService;
 import com.thinkproject.rest_project.service.UsageContractService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,8 +40,8 @@ public class UsageContractController {
         @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @GetMapping
-    public List<UsageContract> getAllContracts() {
-        return usageContractService.getAllContracts();
+    public List<UsageContractDTO> getAllContracts() {
+        return usageContractService.getAllUsageContractsAsDTO();
     }
 
     @Operation(
@@ -60,6 +63,26 @@ public class UsageContractController {
         @Parameter(description = "Data de início", required = true) @RequestParam Date startDate,
         @Parameter(description = "Data de término", required = true) @RequestParam Date endDate) {
         return usageContractService.getContractsByDateRange(startDate, endDate);
+    }
+
+    @Operation(summary = "Obter estatísticas de contratos", description = "Retorna a contagem de contratos agrupados por status.")
+    @GetMapping("/statistics")
+    public List<Object[]> getContractStatistics() {
+        return usageContractService.getContractStatistics();
+    }
+
+    @Operation(summary = "Listar serviços contratados por um cliente", description = "Retorna todos os serviços contratados por um cliente.")
+    @GetMapping("/clients/{clientId}/services")
+    public List<CloudService> getServicesByClient(
+            @Parameter(description = "ID do cliente", required = true) @PathVariable Long clientId) {
+        return usageContractService.getServicesByClient(clientId);
+    }
+
+    @Operation(summary = "Listar clientes que contrataram um serviço", description = "Retorna todos os clientes que contrataram um serviço específico.")
+    @GetMapping("/services/{serviceId}/clients")
+    public List<Client> getClientsByService(
+            @Parameter(description = "ID do serviço", required = true) @PathVariable Long serviceId) {
+        return usageContractService.getClientsByService(serviceId);
     }
 
     @Operation(
