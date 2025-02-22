@@ -1,3 +1,4 @@
+//UpdateCloudVendorRequest.java
 package com.thinkproject.rest_project.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
@@ -37,3 +38,4 @@ public class UpdateCloudVendorRequest {
         this.vendorPhone = vendorPhone;
     }
 }
+

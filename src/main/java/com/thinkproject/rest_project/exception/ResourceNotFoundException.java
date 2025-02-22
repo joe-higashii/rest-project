@@ -1,3 +1,4 @@
+//ResourceNotFoundException.java
 package com.thinkproject.rest_project.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
@@ -5,3 +6,4 @@ public class ResourceNotFoundException extends RuntimeException {
         super(message);
     }
 }
+

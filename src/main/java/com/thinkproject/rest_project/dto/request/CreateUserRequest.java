@@ -1,3 +1,4 @@
+//CreateUserRequest.java
 package com.thinkproject.rest_project.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
@@ -39,3 +40,4 @@ public class CreateUserRequest {
         this.role = role;
     }
 }
+

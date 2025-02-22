@@ -1,3 +1,4 @@
+//CreateClientRequest.java
 package com.thinkproject.rest_project.dto.request;
 
 import jakarta.validation.constraints.Email;
@@ -28,3 +29,4 @@ public class CreateClientRequest {
         this.email = email;
     }
 }
+
