@@ -1,3 +1,4 @@
+//ErrorResponse.java
 package com.thinkproject.rest_project.exception;
 
 import java.time.LocalDateTime;
@@ -60,3 +61,4 @@ public class ErrorResponse {
         this.path = path;
     }
 }
+

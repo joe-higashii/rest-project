@@ -5,6 +5,7 @@ import com.thinkproject.rest_project.exception.BadRequestException;
 import com.thinkproject.rest_project.model.User;
 import com.thinkproject.rest_project.repository.UserRepository;
 import com.thinkproject.rest_project.util.JwtUtil;
+import com.thinkproject.rest_project.util.AppConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,12 @@ public class AuthService {
 
     public Map<String, String> register(User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new BadRequestException("Username já existe!");
+            throw new BadRequestException(AppConstants.ERROR_USERNAME_EXISTS);
         }
 
         String role = user.getRole();
         if (role == null || (!role.equalsIgnoreCase("USER") && !role.equalsIgnoreCase("ADMIN"))) {
-            throw new BadRequestException("Papel inválido! Use 'USER' ou 'ADMIN'.");
+            throw new BadRequestException(AppConstants.ERROR_INVALID_ROLE);
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -41,10 +42,10 @@ public class AuthService {
 
     public Map<String, String> login(User user) {
         User existingUser = userRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new BadRequestException("Usuário ou senha inválidos!"));
+                .orElseThrow(() -> new BadRequestException(AppConstants.ERROR_INVALID_USER_OR_PASSWORD));
 
         if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
-            throw new BadRequestException("Usuário ou senha inválidos!");
+            throw new BadRequestException(AppConstants.ERROR_INVALID_USER_OR_PASSWORD);
         }
 
         String token = jwtUtil.generateToken(existingUser.getUsername());
@@ -56,14 +57,14 @@ public class AuthService {
     }
 
     public Map<String, String> renewToken(String token) {
-        if (!token.startsWith("Bearer ")) {
-            throw new BadRequestException("Token inválido!");
+        if (!token.startsWith(AppConstants.BEARER_PREFIX)) {
+            throw new BadRequestException(AppConstants.ERROR_TOKEN_INVALID);
         }
 
-        token = token.substring(7);
+        token = token.substring(AppConstants.BEARER_PREFIX.length());
 
         if (!jwtUtil.validateToken(token) || jwtUtil.isTokenExpired(token)) {
-            throw new BadRequestException("Token inválido ou expirado!");
+            throw new BadRequestException(AppConstants.ERROR_TOKEN_INVALID_OR_EXPIRED);
         }
 
         String username = jwtUtil.extractUsername(token);

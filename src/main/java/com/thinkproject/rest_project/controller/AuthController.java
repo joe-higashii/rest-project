@@ -5,14 +5,15 @@ import com.thinkproject.rest_project.model.User;
 import com.thinkproject.rest_project.dto.request.CreateUserRequest;
 import com.thinkproject.rest_project.dto.request.LoginRequest;
 import com.thinkproject.rest_project.service.AuthService;
+import com.thinkproject.rest_project.util.UserMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,10 +34,7 @@ public class AuthController {
     public Map<String, String> register(
         @Parameter(description = "Detalhes do usuário para registro (username, password, role)", required = true)
         @Valid @RequestBody CreateUserRequest request) {
-            User user = new User();
-            user.setUsername(request.getUsername());
-            user.setPassword(request.getPassword());
-            user.setRole(request.getRole());
+            User user = UserMapper.mapCreateUserRequestToUser(request);
             return authService.register(user);
     }
 
@@ -52,9 +50,7 @@ public class AuthController {
     public Map<String, String> login(
         @Parameter(description = "Credenciais para autenticação (username e password)", required = true)
         @Valid @RequestBody LoginRequest request) {
-            User user = new User();
-            user.setUsername(request.getUsername());
-            user.setPassword(request.getPassword());
+            User user = UserMapper.mapLoginRequestToUser(request);
             return authService.login(user);
     }
 
@@ -73,3 +69,4 @@ public class AuthController {
             return authService.renewToken(token);
     }
 }
+

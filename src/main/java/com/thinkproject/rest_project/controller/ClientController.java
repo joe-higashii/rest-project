@@ -6,23 +6,20 @@ import com.thinkproject.rest_project.dto.ClientDTO;
 import com.thinkproject.rest_project.dto.request.CreateClientRequest;
 import com.thinkproject.rest_project.model.CloudService;
 import com.thinkproject.rest_project.service.ClientService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import jakarta.validation.Valid;
-
 import java.util.List;
-
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
-import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/clients")
@@ -41,6 +38,7 @@ public class ClientController {
     })
     @GetMapping
     public List<ClientDTO> getAllClients() {
+        log.info("Received request to get all clients");
         return clientService.getAllClientsAsDTO();
     }
 
@@ -54,6 +52,7 @@ public class ClientController {
     })
     @GetMapping("/{id}")
     public ClientDTO getClientById(@PathVariable Long id) {
+        log.info("Received request to get client with id {}", id);
         return clientService.getClientDTOById(id);
     }
 
@@ -79,6 +78,7 @@ public class ClientController {
     public Client createClient(
         @Parameter(description = "Detalhes do cliente a ser criado", required = true)
         @Valid @RequestBody CreateClientRequest request) {
+            log.info("Received request to create a new client with data: {}", request);
             Client client = new Client();
             client.setName(request.getName());
             client.setEmail(request.getEmail());
@@ -96,6 +96,8 @@ public class ClientController {
     @GetMapping("/{id}/services")
     public List<CloudService> getServicesByClientId(
         @Parameter(description = "ID do cliente", required = true) @PathVariable Long id) {
+        log.info("Received request to get services for client with id {}", id);
         return clientService.getServicesByClientId(id);
     }
 }
+
