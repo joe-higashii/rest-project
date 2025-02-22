@@ -1,0 +1,38 @@
+###application.yml
+spring:
+  application:
+    name: rest-project
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  cache:
+    type: simple
+
+jwt:
+  secret: mysecretkeymysecretkeymysecretkeymysecretkey
+  expiration: 86400000
+
+logging:
+  config: classpath:logback-spring.xml
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  server:
+    port: 8080
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  server:
+    port: 80

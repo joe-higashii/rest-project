@@ -18,6 +18,8 @@ import jakarta.validation.Valid;
 import java.util.List;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,17 +31,22 @@ public class ClientController {
     private final ClientService clientService;
 
     @Operation(
-        summary = "Listar todos os clientes",
-        description = "Retorna uma lista de todos os clientes cadastrados no sistema."
+        summary = "Listar todos os clientes paginados",
+        description = "Retorna uma lista paginada de clientes cadastrados no sistema.",
+        parameters = {
+            @Parameter(name = "page", description = "Número da página (começa em 0)", example = "0"),
+            @Parameter(name = "size", description = "Tamanho da página", example = "10"),
+            @Parameter(name = "sort", description = "Critério de ordenação (ex: name,desc)", example = "name,asc")
+        }
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Lista de clientes retornada com sucesso"),
         @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
-    @GetMapping
-    public List<ClientDTO> getAllClients() {
-        log.info("Received request to get all clients");
-        return clientService.getAllClientsAsDTO();
+    @GetMapping //GET /clients?page=0&size=5&sort=name,asc
+    public Page<ClientDTO> getAllClients(Pageable pageable) {
+        log.info("Received request to get all clients with pagination");
+        return clientService.getAllClientsAsDTO(pageable);
     }
 
     @Operation(
