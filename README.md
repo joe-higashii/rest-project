@@ -1,17 +1,22 @@
 # API RESTful com Spring Boot e JWT
 
-Esta é uma API RESTful desenvolvida usando Spring Boot, Spring Security e JWT para autenticação. A aplicação foi construída com foco em segurança, escalabilidade e documentação interativa.
+Esta é uma API RESTful desenvolvida usando Spring Boot, Spring Security e JWT para autenticação. A aplicação foi construída com foco em segurança, escalabilidade, qualidade de código e documentação interativa.
+
+---
 
 ## **Tecnologias Utilizadas**
 
-- **Spring Boot 3.0**: Framework para construir a aplicação.
+- **Spring Boot 3.0**: Framework para construção da API.
 - **Spring Security**: Gerenciamento de autenticação e autorização.
 - **JWT (JSON Web Tokens)**: Autenticação baseada em tokens.
 - **Spring Data JPA**: Acesso ao banco de dados.
 - **PostgreSQL**: Banco de dados relacional.
 - **Swagger/OpenAPI**: Documentação interativa da API.
-- **BCrypt**: Criptografia de senhas.
-- **Lombok**: Redução de código boilerplate com `@RequiredArgsConstructor` e outras anotações.
+- **BCrypt**: Criptografia de senhas para maior segurança.
+- **Lombok**: Redução de código boilerplate com anotações como `@RequiredArgsConstructor`.
+- **ModelMapper**: Mapeamento automático entre entidades e DTOs, simplificando a conversão de dados.
+
+---
 
 ## **Funcionalidades**
 
@@ -36,114 +41,173 @@ Esta é uma API RESTful desenvolvida usando Spring Boot, Spring Security e JWT p
    - Listar serviços contratados por um cliente específico.
    - Listar clientes que contrataram um serviço específico.
    - Filtrar contratos por status (e.g., `ACTIVE`, `CANCELLED`) ou intervalo de datas.
+   - Obter estatísticas de contratos agrupadas por status.
 
-7. **Tratamento de Erros**
-   - `400 Bad Request`: Entradas inválidas (ex.: campos ausentes).
-   - `404 Not Found`: IDs inexistentes.
-   - `500 Internal Server Error`: Erros inesperados (tratamento global).
+7. **Tratamento de Erros Detalhado**
+   - Erros são capturados e respondidos com mensagens claras no formato padronizado:
+     ```json
+     {
+       "timestamp": "2025-02-21T20:00:00",
+       "status": 404,
+       "error": "Not Found",
+       "message": "Cliente não encontrado com ID: 5",
+       "path": "/clients/5"
+     }
+     ```
+   - Tipos de erros tratados:
+     - `400 Bad Request`: Entradas inválidas (ex.: campos ausentes).
+     - `404 Not Found`: IDs inexistentes.
+     - `500 Internal Server Error`: Erros inesperados.
+
+8. **Uso de DTOs**
+   - DTOs personalizados para proteger informações sensíveis e retornar apenas os dados necessários na API:
+     - `ClientDTO`, `CloudServiceDTO`, `UsageContractDTO`, etc.
+   - DTOs de entrada (`CreateClientRequest`, `CreateUsageContractRequest`) validados com Bean Validation (`@Valid`, `@NotNull`, etc.).
+
+---
 
 ## **Requisitos Prévios**
 
-1. **Java 21:** Certifique-se de que o Java 21 esteja instalado e configurado.
-2. **PostgreSQL:** O banco de dados PostgreSQL deve estar configurado e rodando.
-3. **Variáveis de Ambiente:** Configure as variáveis de ambiente para evitar expor credenciais sensíveis no código.
+1. **Java 21:** Certifique-se de ter o Java 21 instalado e configurado corretamente em sua máquina.
+2. **PostgreSQL:** Um banco de dados PostgreSQL deve estar configurado e rodando.
+3. **Variáveis de Ambiente:** Configure as variáveis de ambiente abaixo para evitar credenciais sensíveis no código.
 
-## Configuração de Variáveis de Ambiente
+---
 
-Siga as instruções abaixo para configurar variáveis de ambiente na sua máquina:
+## **Configuração de Variáveis de Ambiente**
 
 ### Windows
 
-1. Pressione `Windows + S` e procure por **"Variáveis de Ambiente"**. Clique em **"Editar as Variáveis de Ambiente do Sistema"**.
-2. Adicione as variáveis:
+1. Abra as configurações de **Variáveis de Ambiente** e adicione os valores abaixo:
    - `DATABASE_URL`: `jdbc:postgresql://localhost:5432/seu_banco`
    - `DATABASE_USERNAME`: `seu_usuario`
    - `DATABASE_PASSWORD`: `sua_senha`
 
 ### Linux/macOS
 
-1. Abra o arquivo do shell correspondente:
+1. Abra o arquivo de configuração do shell:
    - Para Bash: `~/.bashrc`
    - Para Zsh: `~/.zshrc`
 2. Adicione as variáveis:
-```
-  export DATABASE_URL="jdbc:postgresql://localhost:5432/seu_banco"
-  export DATABASE_USERNAME="seu_usuario"
-  export DATABASE_PASSWORD="sua_senha"
-```
+   ```bash
+   export DATABASE_URL="jdbc:postgresql://localhost:5432/seu_banco"
+   export DATABASE_USERNAME="seu_usuario"
+   export DATABASE_PASSWORD="sua_senha"
+   ```
 3. Atualize o shell:
-`source ~/.bashrc`
+   ```bash
+   source ~/.bashrc
+   ```
+
+---
 
 ## **Principais Endpoints**
 
 ### **Autenticação**
 
 1. **Registro de Usuário**
-- **`POST /auth/register`**
-- Exemplo de Entrada (JSON):
-```
-{
-  "username": "admin",
-  "password": "admin123",
-  "role": "ADMIN"
-}
-```
-- **Respostas**:
-- `200`: Usuário registrado com sucesso.
-- `400`: Username já cadastrado ou papel inválido.
+   - **`POST /auth/register`**
+   - Exemplo de Entrada (JSON):
+     ```json
+     {
+       "username": "admin",
+       "password": "admin123",
+       "role": "ADMIN"
+     }
+     ```
+   - Respostas:
+     - `200`: Usuário registrado com sucesso.
+     - `400`: Username já existe ou papel inválido.
 
 2. **Login**
-- **`POST /auth/login`**
-- Exemplo de Entrada (JSON):
-```
-{
-"username": "admin",
-"password": "admin123"
-}
-```
-- **Respostas**:
-- `200`: Retorna um token JWT.
-- `401`: Usuário ou senha inválidos.
+   - **`POST /auth/login`**
+   - Exemplo de Entrada (JSON):
+     ```json
+     {
+       "username": "admin",
+       "password": "admin123"
+     }
+     ```
+   - Respostas:
+     - `200`: Retorna um token JWT.
+     - `401`: Usuário ou senha inválidos.
 
 3. **Renovação de Token**
-- **`POST /auth/renew-token`**
-- **Cabeçalho**:
-`Authorization: Bearer <seu-token-jwt>`
+   - **`POST /auth/renew-token`**
+   - Cabeçalho:
+     ```bash
+     Authorization: Bearer 
+     ```
+
+---
 
 ### **Clientes e Serviços**
 
-1. **Listar Serviços de um Cliente**
-- **`GET /clients/{id}/services`**
-- Lista todos os serviços contratados por um cliente específico.
+1. **Listar Todos os Clientes**
+   - **`GET /clients`**
 
-2. **Listar Clientes de um Serviço**
-- **`GET /cloudservice/{id}/clients`**
-- Lista todos os clientes que contrataram um serviço específico.
+2. **Criar um Cliente**
+   - **`POST /clients`**
+   - Exemplo de Entrada (JSON):
+     ```json
+     {
+       "name": "Empresa Cliente",
+       "email": "empresa@example.com"
+     }
+     ```
 
-### **Contracts**
+3. **Listar Serviços de um Cliente**
+   - **`GET /clients/{id}/services`**
+   - Lista todos os serviços contratados por um cliente específico.
 
-1. **Filtrar Contratos por Status**
-- **`GET /usage-contracts/status/{status}`**
-- Retorna contratos com o status fornecido.
+4. **Listar Clientes de um Serviço**
+   - **`GET /cloudservice/{id}/clients`**
+   - Lista todos os clientes que contrataram um serviço específico.
 
-2. **Filtrar Contratos por Intervalo de Datas**
-- **`GET /usage-contracts/date-range?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD`**
-- Retorna contratos dentro do intervalo de datas fornecido.
+---
+
+### **Contratos**
+
+1. **Criar um Contrato**
+   - **`POST /usage-contracts`**
+   - Exemplo de Entrada (JSON):
+     ```json
+     {
+       "client": { "id": 1 },
+       "service": { "id": 1 },
+       "status": "ACTIVE"
+     }
+     ```
+
+2. **Listar Contratos por Status**
+   - **`GET /usage-contracts/status/{status}`**
+
+3. **Filtrar Contratos por Intervalo de Datas**
+   - **`GET /usage-contracts/date-range?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD`**
+
+4. **Obter Estatísticas de Contratos**
+   - **`GET /usage-contracts/statistics`**
+
+---
 
 ## **Notas sobre Segurança**
 
 - Tokens JWT possuem expiração de 1 dia.
 - Endpoints protegidos por papéis (`USER` ou `ADMIN`).
-- Senhas armazenadas criptografadas com BCrypt.
+- Senhas armazenadas com criptografia robusta (BCrypt).
 
-## **Refatoração Recente**
+---
 
-O projeto foi atualizado para usar **injeção de dependências via construtor** com o Lombok:
-- Substituímos `@Autowired` por `@RequiredArgsConstructor` em todas as classes.
-- Isso melhora a imutabilidade e a testabilidade do código.
+## **Refatorações Recentes**
+
+- **ModelMapper:** Utilizado para conversão automática entre entidades e DTOs.
+- **GlobalExceptionHandler:** Tratamento estruturado de erros com mensagens claras e detalhadas.
+- **DTOs:** Introdução de DTOs para proteger dados sensíveis e personalizar as respostas da API.
+
+---
 
 ## **Contato**
 
-Caso tenha dúvidas ou sugestões, entre em contato:
+Caso tenha dúvidas, sugestões ou precise de ajuda:
 - **Autor:** Joedson Mendes de Amorim
 - **Email:** joedsondeamorim@outlook.com
