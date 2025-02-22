@@ -206,6 +206,37 @@ Esta é uma API RESTful desenvolvida usando Spring Boot, Spring Security e JWT p
 
 ---
 
+## **Novas Funcionalidades**
+
+1. **Paginação e Ordenação**
+   - Suporte a paginação e ordenação em endpoints que retornam listas grandes.
+   - Exemplo de uso:
+     ```
+     GET /clients?page=0&size=5&sort=name,asc
+     ```
+
+2. **Segurança Avançada com Spring Security**
+   - Utilização de **`@PreAuthorize`** para proteger métodos em nível granular.
+   - Restrições baseadas em papéis (`USER` vs `ADMIN`).
+   - Endpoint para renovação de senha.
+
+3. **Logs Estruturados**
+   - Logs no formato JSON configurados com Logback e `logstash-logback-encoder`.
+   - Integrado para monitoramento com Elastic Stack (ELK).
+
+4. **Rate Limiting**
+   - Limitação de requisições por IP configurada para **100 requisições por minuto**.
+   - Retorna erro **429 Too Many Requests** quando o limite é excedido.
+
+---
+
+## **Notas Adicionais**
+
+- Valores configuráveis (e.g., JWT_SECRET, mensagens de erro) são gerenciados na classe `AppConstants` para centralizar configurações importantes.
+- A estrutura de resposta de erros foi padronizada com mensagens detalhadas.
+
+---
+
 ## **Contato**
 
 Caso tenha dúvidas, sugestões ou precise de ajuda:

@@ -10,14 +10,16 @@ import com.thinkproject.rest_project.dto.request.UpdateUsageContractRequest;
 import com.thinkproject.rest_project.service.UsageContractService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
@@ -84,7 +86,15 @@ public class UsageContractController {
 
     @Operation(
         summary = "Criar um novo contrato de uso",
-        description = "Cria um novo contrato de uso entre um cliente e um serviço."
+        description = "Cria um novo contrato de uso entre um cliente e um serviço.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                examples = @ExampleObject(
+                    name = "Exemplo de Contrato de Uso",
+                    value = "{ \"clientId\": 1, \"serviceId\": 2, \"status\": \"ACTIVE\" }"
+                )
+            )
+        )
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Contrato criado com sucesso"),

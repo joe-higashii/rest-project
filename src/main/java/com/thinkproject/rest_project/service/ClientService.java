@@ -10,6 +10,9 @@ import com.thinkproject.rest_project.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,13 +25,10 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final ModelMapper modelMapper;
 
-    public List<ClientDTO> getAllClientsAsDTO() {
-        log.info("Fetching all clients as DTOs");
-        List<ClientDTO> dtos = clientRepository.findAll().stream()
-                .map(client -> modelMapper.map(client, ClientDTO.class))
-                .toList();
-        log.info("Found {} clients", dtos.size());
-        return dtos;
+    @Cacheable(value = "clients", key = "#pageable.pageNumber")
+    public Page<ClientDTO> getAllClientsAsDTO(Pageable pageable) {
+        log.info("Fetching all clients with pagination: page {}, size {}", pageable.getPageNumber(), pageable.getPageSize());
+        return clientRepository.findAll(pageable).map(client -> modelMapper.map(client, ClientDTO.class));
     }
     
     public ClientDTO getClientDTOById(Long id) {

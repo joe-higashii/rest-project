@@ -8,13 +8,15 @@ import com.thinkproject.rest_project.model.CloudVendor;
 import com.thinkproject.rest_project.service.CloudServiceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
@@ -53,7 +55,15 @@ public class CloudServiceController {
 
     @Operation(
         summary = "Criar um novo serviço de nuvem",
-        description = "Adiciona um novo serviço ao sistema com as informações fornecidas."
+        description = "Adiciona um novo serviço ao sistema com as informações fornecidas.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                examples = @ExampleObject(
+                    name = "Exemplo de Serviço de Nuvem",
+                    value = "{ \"name\": \"Compute Service\", \"description\": \"Serviço de computação em nuvem\", \"vendorId\": 1 }"
+                )
+            )
+        )
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Serviço criado com sucesso"),

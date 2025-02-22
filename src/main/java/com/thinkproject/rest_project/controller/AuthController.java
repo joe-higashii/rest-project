@@ -8,6 +8,8 @@ import com.thinkproject.rest_project.service.AuthService;
 import com.thinkproject.rest_project.util.UserMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,15 @@ public class AuthController {
 
     @Operation(
         summary = "Registrar um novo usuário",
-        description = "Permite registrar um novo usuário no sistema, fornecendo um username, senha e papel (USER ou ADMIN)."
+        description = "Permite registrar um novo usuário no sistema, fornecendo um username, senha e papel (USER ou ADMIN).",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                examples = @ExampleObject(
+                    name = "Exemplo de Registro",
+                    value = "{ \"username\": \"johndoe\", \"password\": \"secret123\", \"role\": \"USER\" }"
+                )
+            )
+        )
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Usuário registrado com sucesso"),
@@ -40,7 +50,15 @@ public class AuthController {
 
     @Operation(
         summary = "Fazer login",
-        description = "Autentica o usuário no sistema e retorna um token JWT para ser usado em endpoints protegidos."
+        description = "Autentica o usuário no sistema e retorna um token JWT para ser usado em endpoints protegidos.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                examples = @ExampleObject(
+                    name = "Exemplo de Login",
+                    value = "{ \"username\": \"johndoe\", \"password\": \"secret123\" }"
+                )
+            )
+        )
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Login realizado com sucesso"),
@@ -56,7 +74,14 @@ public class AuthController {
 
     @Operation(
         summary = "Renovar token JWT",
-        description = "Permite renovar um token JWT válido antes de ele expirar, retornando um novo token atualizado."
+        description = "Permite renovar um token JWT válido antes de ele expirar, retornando um novo token atualizado.",
+        parameters = {
+            @Parameter(
+                name = "Authorization",
+                description = "Token JWT no formato 'Bearer {token}'",
+                example = "Bearer eyJhbGciOiJIUzI1NiJ9..."
+            )
+        }
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Token renovado com sucesso"),
@@ -64,7 +89,6 @@ public class AuthController {
     })
     @PostMapping("/renew-token")
     public Map<String, String> renewToken(
-        @Parameter(description = "Token JWT atual no cabeçalho Authorization com o formato 'Bearer {token}'", required = true)
         @RequestHeader("Authorization") String token) {
             return authService.renewToken(token);
     }

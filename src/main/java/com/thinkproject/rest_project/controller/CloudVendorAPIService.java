@@ -9,9 +9,10 @@ import com.thinkproject.rest_project.service.CloudVendorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
@@ -42,6 +43,7 @@ public class CloudVendorAPIService {
     }
 
     @Operation(summary = "Atualizar um fornecedor", description = "Atualiza as informações de um fornecedor existente pelo seu ID.")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{vendorId}")
     public CloudVendor updateCloudVendor(
         @Parameter(description = "ID do fornecedor que será atualizado.", required = true)
@@ -56,6 +58,7 @@ public class CloudVendorAPIService {
     }
 
     @Operation(summary = "Excluir fornecedor pelo ID", description = "Remove o fornecedor do banco de dados pelo seu ID.")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{vendorId}")
     public String deleteCloudVendor(
         @Parameter(description = "ID do fornecedor que será excluído.", required = true)
