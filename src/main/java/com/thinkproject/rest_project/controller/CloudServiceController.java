@@ -1,17 +1,15 @@
 //CloudServiceController.java
 package com.thinkproject.rest_project.controller;
 
+import com.thinkproject.rest_project.config.documentation.CloudServiceControllerApiOperation.CreateService;
+import com.thinkproject.rest_project.config.documentation.CloudServiceControllerApiOperation.GetAllServices;
+import com.thinkproject.rest_project.config.documentation.CloudServiceControllerApiOperation.GetClientServices;
 import com.thinkproject.rest_project.model.CloudService;
 import com.thinkproject.rest_project.dto.CloudServiceDTO;
 import com.thinkproject.rest_project.dto.request.CreateCloudServiceRequest;
 import com.thinkproject.rest_project.model.CloudVendor;
 import com.thinkproject.rest_project.service.CloudServiceService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -26,50 +24,20 @@ public class CloudServiceController {
 
     private final CloudServiceService cloudServiceService;
 
-    @Operation(
-        summary = "Listar todos os serviços",
-        description = "Retorna uma lista de todos os serviços de nuvem cadastrados no sistema."
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista de serviços retornada com sucesso"),
-        @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
-    })
+    @GetAllServices
     @GetMapping
     public List<CloudServiceDTO> getAllServices() {
         return cloudServiceService.getAllServicesAsDTO();
     }
 
-    @Operation(
-        summary = "Listar todos os clientes que utilizam um serviço",
-        description = "Retorna uma lista de clientes que contrataram um serviço específico."
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista de clientes retornada com sucesso."),
-        @ApiResponse(responseCode = "404", description = "Serviço não encontrado.")
-    })
+    @GetClientServices
     @GetMapping("/{id}/clients")
     public List<?> getClientsByServiceId(
         @Parameter(description = "ID do serviço", required = true) @PathVariable Long id) {
         return cloudServiceService.getClientsByServiceId(id);
     }
 
-    @Operation(
-        summary = "Criar um novo serviço de nuvem",
-        description = "Adiciona um novo serviço ao sistema com as informações fornecidas.",
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            content = @Content(
-                examples = @ExampleObject(
-                    name = "Exemplo de Serviço de Nuvem",
-                    value = "{ \"name\": \"Compute Service\", \"description\": \"Serviço de computação em nuvem\", \"vendorId\": 1 }"
-                )
-            )
-        )
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Serviço criado com sucesso"),
-        @ApiResponse(responseCode = "400", description = "Solicitação inválida (exemplo: campos obrigatórios ausentes)"),
-        @ApiResponse(responseCode = "500", description = "Erro interno ao salvar o serviço")
-    })
+    @CreateService
     @PostMapping
     public CloudService createService(
         @Parameter(description = "Detalhes do serviço a ser criado", required = true)
