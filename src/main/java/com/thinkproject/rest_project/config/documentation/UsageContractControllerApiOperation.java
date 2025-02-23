@@ -1,3 +1,4 @@
+//UsageContractControllerApiOperation.java
 package com.thinkproject.rest_project.config.documentation;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -104,3 +105,4 @@ public @interface UsageContractControllerApiOperation {
     public @interface DeleteContract {}
     
 }
+

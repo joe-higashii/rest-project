@@ -21,10 +21,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.thinkproject.rest_project.config.documentation.ClientControllerApiOperation.CreateClient;
-import com.thinkproject.rest_project.config.documentation.ClientControllerApiOperation.GetAllClients;
-import com.thinkproject.rest_project.config.documentation.ClientControllerApiOperation.GetClientById;
-import com.thinkproject.rest_project.config.documentation.ClientControllerApiOperation.GetClientServices;
+import com.thinkproject.rest_project.config.documentation.ClientControllerApiOperation.*;
 
 @Slf4j
 @RequiredArgsConstructor

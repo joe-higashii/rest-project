@@ -1,13 +1,17 @@
 //CloudServiceDTO.java
 package com.thinkproject.rest_project.dto;
 
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import jakarta.validation.constraints.NotBlank;
+
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class CloudServiceDTO {
-    private Long id;
+@EqualsAndHashCode(callSuper = true)
+public class CloudServiceDTO extends BaseDTO {
+    @NotBlank(message = "O nome do serviço não pode estar vazio.")
     private String name;
+
+    @NotBlank(message = "A descrição do serviço não pode estar vazia.")
     private String description;
 }
 
