@@ -1,3 +1,4 @@
+//CloudServiceControllerApiOperation.java
 package com.thinkproject.rest_project.config.documentation;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +29,8 @@ public @interface CloudServiceControllerApiOperation {
     })
     public @interface CreateService {}
 
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
     @Operation(
         summary = "Listar todos os clientes que utilizam um serviço",
         description = "Retorna uma lista de clientes que contrataram um serviço específico."
@@ -38,3 +41,4 @@ public @interface CloudServiceControllerApiOperation {
     })
     public @interface GetClientServices {}
 }
+

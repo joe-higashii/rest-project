@@ -2,7 +2,6 @@
 package com.thinkproject.rest_project.controller;
 
 import com.thinkproject.rest_project.config.documentation.CloudVendorAPIControllerApiOperations.*;
-import com.thinkproject.rest_project.model.CloudVendor;
 import com.thinkproject.rest_project.dto.CloudVendorDTO;
 import com.thinkproject.rest_project.dto.request.CreateCloudVendorRequest;
 import com.thinkproject.rest_project.dto.request.UpdateCloudVendorRequest;
@@ -29,24 +28,26 @@ public class CloudVendorAPIService {
 
     @CreateVendor
     @PostMapping
-    public CloudVendor createCloudVendor(@Valid @RequestBody CreateCloudVendorRequest request) {
-        CloudVendor vendor = new CloudVendor();
-        vendor.setVendorName(request.getVendorName());
-        vendor.setVendorAddress(request.getVendorAddress());
-        vendor.setVendorPhone(request.getVendorPhone());
-        return cloudVendorService.createVendor(vendor);
+    public CloudVendorDTO createCloudVendor(@Valid @RequestBody CreateCloudVendorRequest request) {
+        CloudVendorDTO vendorDTO = new CloudVendorDTO(
+            request.getVendorName(),
+            request.getVendorAddress(),
+            request.getVendorPhone()
+        );
+        return cloudVendorService.createVendor(vendorDTO);
     }
 
     @UpdateVendor
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{vendorId}")
-    public CloudVendor updateCloudVendor(@PathVariable("vendorId") Long vendorId,
-                                        @Valid @RequestBody UpdateCloudVendorRequest request) {
-        CloudVendor vendor = new CloudVendor();
-        vendor.setVendorName(request.getVendorName());
-        vendor.setVendorAddress(request.getVendorAddress());
-        vendor.setVendorPhone(request.getVendorPhone());
-        return cloudVendorService.updateVendor(vendorId, vendor);
+    public CloudVendorDTO updateCloudVendor(@PathVariable("vendorId") Long vendorId,
+                                            @Valid @RequestBody UpdateCloudVendorRequest request) {
+        CloudVendorDTO vendorDTO = new CloudVendorDTO(
+            request.getVendorName(),
+            request.getVendorAddress(),
+            request.getVendorPhone()
+        );
+        return cloudVendorService.updateVendor(vendorId, vendorDTO);
     }
 
     @DeleteVendor
@@ -56,6 +57,5 @@ public class CloudVendorAPIService {
         cloudVendorService.deleteVendor(vendorId);
         return "Vendor deleted successfully";
     }
-
 }
 

@@ -228,6 +228,58 @@ Esta é uma API RESTful desenvolvida usando Spring Boot, Spring Security e JWT p
    - Limitação de requisições por IP configurada para **100 requisições por minuto**.
    - Retorna erro **429 Too Many Requests** quando o limite é excedido.
 
+5. **Abstração de Logs**
+   - Logs automatizados para todas as entradas, saídas e exceções nos métodos da camada de serviços.
+   - Exemplo de log:
+     ```
+     INFO - Entrando em ClientService.getClientById com argumentos [5]
+     INFO - Saindo de ClientService.getClientById com resultado ClientDTO(id=5, name=Empresa X, email=empresa@example.com)
+     ```
+
+6. **Validação Reutilizável**
+   - Nova anotação `@NotNullOrEmpty` para validar campos string:
+     - Garante que o campo não seja nulo ou vazio.
+     - Exemplo:
+       ```java
+       @NotNullOrEmpty(message = "O nome não pode estar vazio.")
+       private String name;
+       ```
+
+7. **DTOs Baseados em Herança**
+   - Campos comuns como `id` foram movidos para a classe base `BaseDTO`, promovendo reutilização.
+
+8. **Mapeamento Centralizado**
+   - Criado `GenericMapper` para gerenciar conversões entre entidades e DTOs de maneira consistente.
+
+9. **Logging Automático**
+   - Introduzido `LoggingAspect` para capturar automaticamente:
+     - Entradas e saídas de métodos na camada de serviços.
+     - Exceções geradas em métodos da camada de serviços.
+   - Exemplo:
+     ```
+     INFO - Entrando em UsageContractService.createContract com argumentos [clientId=1, serviceId=2]
+     INFO - Saindo de UsageContractService.createContract com UsageContract{id=10, status='ACTIVE'}
+     ```
+
+10. **Refatoração dos DTOs**
+    - Criada classe base `BaseDTO` para reduzir duplicação.
+    - Substituídos DTOs de entrada e saída para promover consistência:
+      - **Entrada:** `CreateClientRequest`, `CreateCloudVendorRequest`, etc.
+      - **Saída:** `ClientDTO`, `CloudServiceDTO`, etc.
+
+11. **Rate Limiting**
+    - Adicionado rate limiting via `RateLimitingFilter`:
+      - Configurado para 100 requisições por minuto por IP.
+      - Retorna o erro **429 Too Many Requests** quando o limite é excedido.
+
+12. **Validações Personalizadas**
+    - Criada a anotação `@NotNullOrEmpty` para campos que não podem ser vazios:
+      - Usada em DTOs de entrada para validação automática.
+
+13. **Melhorias no Swagger**
+    - Criadas meta-anotações para reduzir repetição no Swagger:
+      - Exemplo: `@ApiOperationStandard` configura operações e respostas padrão.
+
 ---
 
 ## **Notas Adicionais**

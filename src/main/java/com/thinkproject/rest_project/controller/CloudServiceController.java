@@ -1,9 +1,7 @@
 //CloudServiceController.java
 package com.thinkproject.rest_project.controller;
 
-import com.thinkproject.rest_project.config.documentation.CloudServiceControllerApiOperation.CreateService;
-import com.thinkproject.rest_project.config.documentation.CloudServiceControllerApiOperation.GetAllServices;
-import com.thinkproject.rest_project.config.documentation.CloudServiceControllerApiOperation.GetClientServices;
+import com.thinkproject.rest_project.config.documentation.CloudServiceControllerApiOperation.*;
 import com.thinkproject.rest_project.model.CloudService;
 import com.thinkproject.rest_project.dto.CloudServiceDTO;
 import com.thinkproject.rest_project.dto.request.CreateCloudServiceRequest;

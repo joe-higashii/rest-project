@@ -11,5 +11,11 @@ public class CloudVendorDTO {
     private String vendorName;
     private String vendorAddress;
     private String vendorPhone;
+
+    public CloudVendorDTO(String vendorName, String vendorAddress, String vendorPhone) {
+        this.vendorName = vendorName;
+        this.vendorAddress = vendorAddress;
+        this.vendorPhone = vendorPhone;
+    }
 }
 
